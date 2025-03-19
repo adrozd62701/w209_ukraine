@@ -4,7 +4,6 @@ pandas
 numpy
 pyarrow
 scipy
-openpyxl
 os
 itertools
 json
