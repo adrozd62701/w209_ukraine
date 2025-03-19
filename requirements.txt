@@ -1,3 +1,17 @@
 streamlit
 altair
 pandas
+numpy
+pyarrow
+scipy
+openpyxl
+os
+itertools
+json
+datetime
+json
+matplotlib
+networkx
+dash
+plotly
+datetime
