@@ -10,3 +10,4 @@ dash
 plotly
 datetime
 datetime
+plotly
