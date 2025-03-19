@@ -7,7 +7,7 @@ st.title("My Streamlit Web App")
 st.write("Welcome to my Streamlit site!")
 
 data = load_data()
-st.dataframe(data)
+st.dataframe(data.head())
 
 name = st.text_input("Enter your name:")
 if name:
