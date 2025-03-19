@@ -4,11 +4,6 @@ pandas
 numpy
 pyarrow
 scipy
-os
-itertools
-json
-datetime
-json
 matplotlib
 networkx
 dash
