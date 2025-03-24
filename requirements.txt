@@ -7,7 +7,5 @@ scipy
 matplotlib
 networkx
 dash
-plotly
-datetime
 datetime
 plotly
