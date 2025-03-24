@@ -3,6 +3,7 @@ import numpy as np
 import streamlit as st
 from helpers.helper_functions import *
 import datetime
+import os
 
 data_path = os.path.join(os.path.dirname(__file__),"data","Ukraine_Black_Sea_2020_2025_Jan24.csv.gz")
 
