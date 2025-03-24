@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
-from helpers.helper_functions import *
+import helpers.helper_functions
 import datetime
 import os
 
@@ -21,21 +21,21 @@ div[class*="stSlider"] > label > div[data-testid="stMarkdownContainer"] > p {
 st.title("The Conflict in Ukraine")
 st.header("Welcome to our app!")
 st.write("This app tells the story of the conflict in Ukraine through data visualizations.")
-st.write("Please explore the interactive visualizåations on our website:")
+st.write("Please explore the interactive visualizations on our website:")
 st.write("**Conflict Map:** <describe conflict map>")
 st.write("**Actors Network:** <describe actors network>")
 st.write("**Additional Resources:** The final tab on this website has additional resources pertaining to the conflict in Ukraine")
 
-data, ukraine_geojson = load_data(data_path)
-news = load_news()
+data, ukraine_geojson = helpers.helper_functions.load_data(data_path)
+news = helpers.helper_functions.load_news()
 
 
-timeline_image = load_timeline_image()
+timeline_image = helpers.helper_functions.load_timeline_image()
 
 st.image(timeline_image)
 
 
-merged_data = merge_news(data,news)
+merged_data = helpers.helper_functions.merge_news(data,news)
 
 data['event_date'] = pd.to_datetime(pd.to_datetime(data['event_date'])).apply(lambda x: x.strftime('%Y-%m-%d'))
 unique_dates = data['event_date'].sort_values().unique()
@@ -56,12 +56,12 @@ with st.container():
         )
 
         st.write(" ")
-        conflict_map_fig = generate_conflict_map(data, selected_date, ukraine_geojson)
+        conflict_map_fig = helpers.helper_functions.generate_conflict_map(data, selected_date, ukraine_geojson)
         st.plotly_chart(conflict_map_fig, use_container_width=True)
 
     with tab2:
 
-        area_chart = generate_fatalities_by_event_type(merged_data)
+        area_chart = helpers.helper_functions.generate_fatalities_by_event_type(merged_data)
         
         # Show charts in Streamlit
         st.altair_chart(area_chart, use_container_width=True)

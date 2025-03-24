@@ -5,7 +5,6 @@ import plotly.graph_objects as go
 import json
 import altair as alt
 from PIL import Image
-import os
 
 @st.cache_data()
 def load_timeline():
