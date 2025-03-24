@@ -8,3 +8,4 @@ matplotlib
 networkx
 datetime
 plotly
+PIL
