@@ -3,6 +3,7 @@ import numpy as np
 import streamlit as st
 from helper_functions import *
 import datetime
+
 st.set_page_config(layout="wide")
 
 st.markdown(
@@ -13,8 +14,6 @@ div[class*="stSlider"] > label > div[data-testid="stMarkdownContainer"] > p {
     </style>
     """, unsafe_allow_html=True)
 
-timeline_image = load_timeline_image()
-
 st.title("The Conflict in Ukraine")
 st.header("Welcome to our app!")
 st.write("This app tells the story of the conflict in Ukraine through data visualizations.")
@@ -22,10 +21,15 @@ st.write("Please explore the interactive visualizåations on our website:")
 st.write("**Conflict Map:** <describe conflict map>")
 st.write("**Actors Network:** <describe actors network>")
 st.write("**Additional Resources:** The final tab on this website has additional resources pertaining to the conflict in Ukraine")
-st.image(timeline_image)
 
 data, ukraine_geojson = load_data()
 news = load_news()
+
+
+timeline_image = load_timeline_image()
+
+st.image(timeline_image)
+
 
 merged_data = merge_news(data,news)
 

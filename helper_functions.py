@@ -8,7 +8,7 @@ from PIL import Image
 
 @st.cache_data()
 def load_timeline():
-    timeline_path = 'data/timeline.csv'
+    timeline_path = 'w209_ukraine/data/timeline.csv'
     timeline = pd.read_csv(timeline_path)
     timeline = timeline.iloc[:,1:3]
 
@@ -16,26 +16,26 @@ def load_timeline():
 
 @st.cache_data()
 def load_timeline_image():
-    timeline_image_path = 'data/timeline_image.png'
+    timeline_image_path = 'w209_ukraine/data/timeline_image.png'
     timeline_image = Image.open(timeline_image_path)
 
     return timeline_image
 
 @st.cache_data()
 def load_news():
-    news_path = 'data/markers_prototype.csv'
+    news_path = 'w209_ukraine/data/markers_prototype.csv'
     news = pd.read_csv(news_path)
 
     return news
 
 @st.cache_data
 def load_data():
-    data_path = 'data/Ukraine_Black_Sea_2020_2025_Jan24.csv.gz'
+    data_path = 'w209_ukraine/data/Ukraine_Black_Sea_2020_2025_Jan24.csv.gz'
     data = pd.read_csv(data_path, compression='gzip')
     data = data[data["event_date"] >= "2022-01-01"]
     data = data.iloc[:,2:]
 
-    with open('data/ukraine_border.geojson') as f:
+    with open('w209_ukraine/data/ukraine_border.geojson') as f:
         ukraine_geojson = json.load(f)
     return data, ukraine_geojson
 
