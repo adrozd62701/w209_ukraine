@@ -9,4 +9,3 @@ networkx
 datetime
 plotly
 Pillow
-os
