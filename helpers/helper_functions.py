@@ -9,7 +9,7 @@ import os
 
 @st.cache_data()
 def load_timeline():
-    timeline_path = 'w209_ukraine/data/timeline.csv'
+    timeline_path = 'data/timeline.csv'
     timeline = pd.read_csv(timeline_path)
     timeline = timeline.iloc[:,1:3]
 
