@@ -8,5 +8,5 @@ matplotlib
 networkx
 datetime
 plotly
-PIL
+Pillow
 os
