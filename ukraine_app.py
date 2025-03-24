@@ -4,6 +4,9 @@ import streamlit as st
 from helpers.helper_functions import *
 import datetime
 
+data_path = os.path.join(os.path.dirname(__file__),"data","Ukraine_Black_Sea_2020_2025_Jan24.csv.gz")
+
+
 st.set_page_config(layout="wide")
 
 st.markdown(
@@ -22,7 +25,7 @@ st.write("**Conflict Map:** <describe conflict map>")
 st.write("**Actors Network:** <describe actors network>")
 st.write("**Additional Resources:** The final tab on this website has additional resources pertaining to the conflict in Ukraine")
 
-data, ukraine_geojson = load_data()
+data, ukraine_geojson = load_data(data_path)
 news = load_news()
 
 

@@ -30,11 +30,11 @@ def load_news():
     return news
 
 @st.cache_data
-def load_data():
-    ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
+def load_data(data_path):
+    # ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    
     # data_path = os.path.join(ROOT_DIR, "data", "Ukraine_Black_Sea_2020_2025_Jan24.csv.gz")
-    data_path = 'data/Ukraine_Black_Sea_2020_2025_Jan24.csv.gz'
+    # data_path = 'data/Ukraine_Black_Sea_2020_2025_Jan24.csv.gz'
     data = pd.read_csv(data_path, compression='gzip')
     data = data[data["event_date"] >= "2022-01-01"]
     data = data.iloc[:,2:]
