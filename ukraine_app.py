@@ -5,6 +5,15 @@ from helper_functions import *
 import datetime
 st.set_page_config(layout="wide")
 
+st.markdown(
+    """<style>
+div[class*="stSlider"] > label > div[data-testid="stMarkdownContainer"] > p {
+    font-size: 20px;
+}
+    </style>
+    """, unsafe_allow_html=True)
+
+timeline_image = load_timeline_image()
 
 st.title("The Conflict in Ukraine")
 st.header("Welcome to our app!")
@@ -13,36 +22,40 @@ st.write("Please explore the interactive visualizations on our website:")
 st.write("**Conflict Map:** <describe conflict map>")
 st.write("**Actors Network:** <describe actors network>")
 st.write("**Additional Resources:** The final tab on this website has additional resources pertaining to the conflict in Ukraine")
-
+st.image(timeline_image)
 
 data, ukraine_geojson = load_data()
+news = load_news()
+
+merged_data = merge_news(data,news)
+
 data['event_date'] = pd.to_datetime(pd.to_datetime(data['event_date'])).apply(lambda x: x.strftime('%Y-%m-%d'))
 unique_dates = data['event_date'].sort_values().unique()
 min_date = pd.to_datetime(unique_dates[0]).to_pydatetime()
 max_date = pd.to_datetime(unique_dates[-1]).to_pydatetime()
 
-tab1, tab2, tab3, tab4 = st.tabs(["Conflict Map","Actors Network","Additional Resources","dataset"])
-# min_date = datetime.date(2011,1,1)
-# max_date = datetime.date(2012,1,1)
 
-# st.slider("select date test",
-#           min_value=min_date,
-#           max_value=max_date,
-#           value=min_date)
+tab1, tab2, tab3, tab4 = st.tabs(["Conflict Map","Human Cost","Actors Network","Additional Resources"])
 
 with st.container():
     with tab1:
-
+        
         selected_date = st.slider(
-            "Select a date:",
+            "**Select a date:**",
             min_value=min_date,
             max_value=max_date,
             value=min_date
-            # format="YYYY-MM-DD"
         )
 
-        fig = generate_conflict_map(data, selected_date, ukraine_geojson)
-        st.plotly_chart(fig, use_container_width=True)
-    with tab4:
-        st.dataframe(data)
+        st.write(" ")
+        conflict_map_fig = generate_conflict_map(data, selected_date, ukraine_geojson)
+        st.plotly_chart(conflict_map_fig, use_container_width=True)
+
+    with tab2:
+
+        area_chart = generate_fatalities_by_event_type(merged_data)
+        
+        # Show charts in Streamlit
+        st.altair_chart(area_chart, use_container_width=True)
+
         
