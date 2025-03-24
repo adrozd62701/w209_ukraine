@@ -6,6 +6,5 @@ pyarrow
 scipy
 matplotlib
 networkx
-dash
 datetime
 plotly
