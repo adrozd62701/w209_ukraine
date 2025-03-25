@@ -5,6 +5,7 @@ import helpers.conflict_map
 import helpers.human_cost
 import helpers.actors_network
 import helpers.data_loading
+import helpers.additional_resources
 import datetime
 import os
 from datetime import timedelta
@@ -92,5 +93,8 @@ with st.container():
     with tab3:
 
         helpers.actors_network.main(data)
+
+    with tab4:
+        helpers.additional_resources.main()
 
         

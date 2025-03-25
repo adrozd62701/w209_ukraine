@@ -63,7 +63,8 @@ def generate_conflict_map(df, selected_date, ukraine_geojson, disorder_type, eve
         lat=filtered_data['latitude'],
         lon=filtered_data['longitude'],
         z=(filtered_data['intensity']),
-        radius=17,
+        radius=20,
+        opacity=0.8,
         colorscale='Viridis',
         showscale=True,
         name="Conflict Intensity"
