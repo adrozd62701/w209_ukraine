@@ -6,7 +6,6 @@ import helpers.human_cost
 import helpers.actors_network
 import helpers.data_loading
 import helpers.additional_resources
-import datetime
 import os
 from datetime import timedelta
 
@@ -62,39 +61,36 @@ st.markdown(
 
 tab1, tab2, tab3, tab4 = st.tabs(["Conflict Map","Human Cost","Actors Network","Additional Resources"])
 
-with st.container():
-    with tab1:
-        st.sidebar.markdown("### **Conflict Map**")
-        disorder_type = st.sidebar.selectbox('Disorder Type:', ['All'] + sorted(data['disorder_type'].unique().tolist()))
-        event_type = st.sidebar.selectbox('Event Type:', ['All'] + sorted(data['event_type'].unique().tolist()))
-        sub_event_type = st.sidebar.selectbox('Sub Event Type:', ['All'] + sorted(data['sub_event_type'].unique().tolist()))
-        civilian_targeting = st.sidebar.selectbox('Civilian Targeting:', ['All', 'Civilian targeting', 'Non-civilian targeting'])
-        
-        selected_date = st.slider(
-            "Select a date:",
-            min_value=min_date,
-            max_value=max_date,
-            value=min_date,
-            format="MM/DD/YYYY",
-            step=timedelta(days=30)  # Approximation for one month
-        )
-        st.sidebar.divider()
-        st.write(" ")
-        conflict_map_fig = helpers.conflict_map.generate_conflict_map(data, selected_date, ukraine_geojson, disorder_type, event_type, sub_event_type, civilian_targeting)
-        st.plotly_chart(conflict_map_fig, use_container_width=True)
-
-    with tab2:
-
-        area_chart = helpers.human_cost.generate_fatalities_by_event_type(merged_data)
-        
-        # Show charts in Streamlit
-        st.altair_chart(area_chart, use_container_width=True)
+# with st.container():
+with tab1:
+    st.sidebar.markdown("### **Conflict Map**")
+    disorder_type = st.sidebar.selectbox('Disorder Type:', ['All'] + sorted(data['disorder_type'].unique().tolist()))
+    event_type = st.sidebar.selectbox('Event Type:', ['All'] + sorted(data['event_type'].unique().tolist()))
+    sub_event_type = st.sidebar.selectbox('Sub Event Type:', ['All'] + sorted(data['sub_event_type'].unique().tolist()))
+    civilian_targeting = st.sidebar.selectbox('Civilian Targeting:', ['All', 'Civilian targeting', 'Non-civilian targeting'])
     
-    with tab3:
+    selected_date = st.slider(
+        "Select a date:",
+        min_value=min_date,
+        max_value=max_date,
+        value=min_date,
+        format="MM/DD/YYYY",
+        step=timedelta(days=30)  # Approximation for one month
+    )
+    st.sidebar.divider()
+    st.write(" ")
+    conflict_map_fig = helpers.conflict_map.generate_conflict_map(data, selected_date, ukraine_geojson, disorder_type, event_type, sub_event_type, civilian_targeting)
+    st.plotly_chart(conflict_map_fig, use_container_width=True)
 
-        helpers.actors_network.main(data)
+with tab2:
 
-    with tab4:
-        helpers.additional_resources.main()
+    area_chart = helpers.human_cost.generate_fatalities_by_event_type(merged_data)
+    
+    # Show charts in Streamlit
+    st.altair_chart(area_chart, use_container_width=True)
 
-        
+with tab3:
+    helpers.actors_network.main(data)
+
+with tab4:
+    helpers.additional_resources.main()
