@@ -4,6 +4,7 @@ import altair as alt
 
 def generate_fatalities_by_event_type(df):
     data = df.copy()
+    data = data[data['event_type']!='Riots']
     data["event_date"] = pd.to_datetime(data["event_date"])
     data = data[data["event_date"] >= "2022-01-01"]
     data["week"] = data["event_date"].dt.to_period("W").apply(lambda r: r.start_time)
@@ -23,13 +24,15 @@ def generate_fatalities_by_event_type(df):
         "Battles": "#1f77b4",
         "Explosions/Remote violence": "#ff7f0e",
         "Protests": "#2ca02c",
-        "Riots": "#d62728",
+        # "Riots": "#d62728",
         "Strategic developments": "#9467bd",
-        "Violence against civilians": "#8c564b"
+        "Violence against civilians": "#d62728"
     }
 
     # Create Streamlit dropdown
-    selected_event_type = st.radio("Select Event Type:", event_types, index=0, horizontal=True)
+    st.sidebar.markdown("### **Human Cost**")
+    selected_event_type = st.sidebar.radio("Select Event Type:", event_types, index=0, horizontal=False)
+    st.sidebar.divider()
 
     # Apply filtering logic
     if selected_event_type != "All Event Types":
@@ -42,7 +45,12 @@ def generate_fatalities_by_event_type(df):
     area_chart = alt.Chart(weekly_data).mark_area(opacity=0.7).encode(
         x=alt.X("week:T", title="Week"),
         y=alt.Y("fatalities:Q", title="Total Fatalities"),
-        color=alt.Color("event_type:N", title="Event Type", scale=color_scale),
+        color=alt.Color("event_type:N", title="Event Type", scale=color_scale,
+                        legend=alt.Legend(
+                            orient="top",  # Move legend to bottom
+                            direction="horizontal",  # Arrange legend items horizontally
+                            titleAnchor="middle"  # Center the legend title
+                        )),
         tooltip=[
             alt.Tooltip("week:T", title="Week"),
             alt.Tooltip("event_type:N", title="Event Type"),
@@ -52,9 +60,9 @@ def generate_fatalities_by_event_type(df):
 
         ]
     ).properties(
-        title="Fatalities by Event Type (Weekly)",
+        title="Fatalities by Event Type",
         width=700,
-        height=300
+        height=500
     )
 
     news_points = weekly_data[weekly_data["description"] != ""]
