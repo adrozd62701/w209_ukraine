@@ -64,13 +64,13 @@ def get_tooltip(filtered_data, tooltip_cols):
 def generate_conflict_map(df, selected_date, ukraine_geojson):
     df['event_date'] = pd.to_datetime(df['event_date'])
 
-
     heatmap_data = df.groupby(['event_date', 'latitude', 'longitude',
                                "event_type",
-        "actor1", "actor2", "location", "source"]).agg(
+        "actor1", "actor2", "location", "source", "notes"]).agg(
         intensity=('event_id_cnty', 'count'),
         fatalities=('fatalities', 'sum')
     ).reset_index()
+
 
     # st.dataframe(heatmap_data)
 
@@ -146,6 +146,11 @@ def generate_conflict_map(df, selected_date, ukraine_geojson):
     )
 
     return fig
+
+def get_notes(selected_date, df):
+
+    df.rename(columns={'notes':f'Events on {selected_date.strftime('%Y-%m-%d')}','event_type':'Event Type','fatalities':'Fatalities'},inplace=True)
+    return df[df['event_date']==selected_date][[f'Events on {selected_date.strftime('%Y-%m-%d')}','Event Type','Fatalities']]
 
 def generate_fatalities_by_event_type(df):
     data = df.copy()
