@@ -4,6 +4,7 @@ import streamlit as st
 import helpers.helper_functions
 import datetime
 import os
+from datetime import timedelta
 
 data_path = os.path.join(os.path.dirname(__file__),"data","Ukraine_Black_Sea_2020_2025_Jan24.csv.gz")
 
@@ -47,16 +48,22 @@ tab1, tab2, tab3, tab4 = st.tabs(["Conflict Map","Human Cost","Actors Network","
 
 with st.container():
     with tab1:
+        disorder_type = st.sidebar.selectbox('Disorder Type:', ['All'] + sorted(data['disorder_type'].unique().tolist()))
+        event_type = st.sidebar.selectbox('Event Type:', ['All'] + sorted(data['event_type'].unique().tolist()))
+        sub_event_type = st.sidebar.selectbox('Sub Event Type:', ['All'] + sorted(data['sub_event_type'].unique().tolist()))
+        civilian_targeting = st.sidebar.selectbox('Civilian Targeting:', ['All', 'Civilian targeting', 'Non-civilian targeting'])
         
         selected_date = st.slider(
-            "**Select a date:**",
+            "Select a date:",
             min_value=min_date,
             max_value=max_date,
-            value=min_date
+            value=min_date,
+            format="MM/DD/YYYY",
+            step=timedelta(days=30)  # Approximation for one month
         )
 
         st.write(" ")
-        conflict_map_fig = helpers.helper_functions.generate_conflict_map(data, selected_date, ukraine_geojson)
+        conflict_map_fig = helpers.helper_functions.generate_conflict_map(data, selected_date, ukraine_geojson, disorder_type, event_type, sub_event_type, civilian_targeting)
         st.plotly_chart(conflict_map_fig, use_container_width=True)
 
     with tab2:
