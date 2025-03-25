@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 import re
+import calendar
 
 def main(df):
     
@@ -121,8 +122,10 @@ def main(df):
     counts = df_actors.groupby(["year", "month"]).size().reset_index(name="count")
     heatmap_data = pd.merge(grid, counts, on=["year", "month"], how="left").fillna(0)
     
+    heatmap_data["month_name"] = heatmap_data["month"].apply(lambda x: calendar.month_abbr[x])  # Short names: "Jan", "Feb", etc.
+
     heatmap_chart = alt.Chart(heatmap_data).mark_rect().encode(
-        x=alt.X("month:O", title="Month", axis=alt.Axis(labelAngle=0, labelLimit=60)),
+        x=alt.X("month_name:O", title="Month", axis=alt.Axis(labelAngle=0, labelLimit=60)),
         y=alt.Y("year:O", title="Year"),
         color=alt.Color(
             "count:Q", 
@@ -130,7 +133,7 @@ def main(df):
             title="Event Count",
             legend=alt.Legend(labelLimit=1000, labelOverlap="greedy")
         ),
-        tooltip=["year", "month", "count"]
+        tooltip=["year", "month_name", "count"]
     ).properties(width=600, height=400)
     
     st.altair_chart(heatmap_chart, use_container_width=True)
@@ -140,8 +143,10 @@ def main(df):
     # --------------------------------------------------------------------------------
     st.subheader("**Filter Conflict Events by Year, Month, and Keyword**")
     
+    month_names = {m: calendar.month_name[m] for m in months}
+
     selected_heatmap_year = st.selectbox("Select Year", years_with_events)
-    selected_heatmap_month = st.selectbox("Select Month", months)
+    selected_heatmap_month = st.selectbox("Select Month", options=months, format_func=lambda m: month_names[m])
     keyword = st.text_input("Enter a keyword to filter conflict events")
     
     df_filtered = df_actors[
@@ -154,10 +159,11 @@ def main(df):
 
     st.markdown("### **Conflict Event Details**")
     df_filtered['event_date'] = df_filtered['event_date'].apply(lambda x: x.strftime('%Y-%m-%d'))
+    df_filtered.rename(columns={'event_date':'Event Date','notes':'Event Description'},inplace=True)
 
     column_config = {
-        "event_date": st.column_config.DateColumn("event_date", width="small"),
-        "notes": st.column_config.TextColumn("notes", width="medium")
+        "Event Date": st.column_config.DateColumn("Event Date", width="small"),
+        "Event Description": st.column_config.TextColumn("Event Description", width="medium")
     }
 
-    st.dataframe(df_filtered[["event_date", "notes"]].reset_index(drop=True), hide_index=True, column_config=column_config)
+    st.dataframe(df_filtered[["Event Date", "Event Description"]].reset_index(drop=True), hide_index=True, column_config=column_config)
