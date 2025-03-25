@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
-import helpers.helper_functions
+import helpers.conflict_map
+import helpers.human_cost
+import helpers.actors_network
 import datetime
 import os
 from datetime import timedelta
@@ -27,16 +29,16 @@ st.write("**Conflict Map:** <describe conflict map>")
 st.write("**Actors Network:** <describe actors network>")
 st.write("**Additional Resources:** The final tab on this website has additional resources pertaining to the conflict in Ukraine")
 
-data, ukraine_geojson = helpers.helper_functions.load_data(data_path)
-news = helpers.helper_functions.load_news()
+data, ukraine_geojson = helpers.conflict_map.load_data(data_path)
+news = helpers.conflict_map.load_news()
 
 
-timeline_image = helpers.helper_functions.load_timeline_image()
+timeline_image = helpers.conflict_map.load_timeline_image()
 
 st.image(timeline_image)
 
 
-merged_data = helpers.helper_functions.merge_news(data,news)
+merged_data = helpers.conflict_map.merge_news(data,news)
 
 data['event_date'] = pd.to_datetime(pd.to_datetime(data['event_date'])).apply(lambda x: x.strftime('%Y-%m-%d'))
 unique_dates = data['event_date'].sort_values().unique()
@@ -63,14 +65,18 @@ with st.container():
         )
 
         st.write(" ")
-        conflict_map_fig = helpers.helper_functions.generate_conflict_map(data, selected_date, ukraine_geojson, disorder_type, event_type, sub_event_type, civilian_targeting)
+        conflict_map_fig = helpers.conflict_map.generate_conflict_map(data, selected_date, ukraine_geojson, disorder_type, event_type, sub_event_type, civilian_targeting)
         st.plotly_chart(conflict_map_fig, use_container_width=True)
 
     with tab2:
 
-        area_chart = helpers.helper_functions.generate_fatalities_by_event_type(merged_data)
+        area_chart = helpers.human_cost.generate_fatalities_by_event_type(merged_data)
         
         # Show charts in Streamlit
         st.altair_chart(area_chart, use_container_width=True)
+    
+    with tab3:
+
+        helpers.actors_network.main(data)
 
         
