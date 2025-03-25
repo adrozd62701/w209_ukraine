@@ -61,29 +61,39 @@ def get_tooltip(filtered_data, tooltip_cols):
 
     return filtered_data, hover_text
 
-def generate_conflict_map(df, selected_date, ukraine_geojson):
+def generate_conflict_map(df, selected_date, ukraine_geojson, disorder_type, event_type, sub_event_type, civilian_targeting):
     df['event_date'] = pd.to_datetime(df['event_date'])
+    df['month_year'] = df['event_date'].dt.to_period('M')
 
+    # Filter data based on the month and year of the selected date
+    selected_period = pd.to_datetime(selected_date).to_period('M')
+    df = df[df['month_year'] == selected_period]
+    
+    # Apply filters based on the widgets' current settings
+    if disorder_type != 'All':
+        df = df[df['disorder_type'] == disorder_type]
+    if event_type != 'All':
+        df = df[df['event_type'] == event_type]
+    if sub_event_type != 'All':
+        df = df[df['sub_event_type'] == sub_event_type]
+    if civilian_targeting == 'Civilian targeting':
+        df = df[df['civilian_targeting'] == 'Yes']
+    elif civilian_targeting == 'Non-civilian targeting':
+        df = df[df['civilian_targeting'] == 'No']
 
-    heatmap_data = df.groupby(['event_date', 'latitude', 'longitude',
-                               "event_type",
-        "actor1", "actor2", "location", "source"]).agg(
+     # Aggregate data
+    heatmap_data = df.groupby(['month_year', 'latitude', 'longitude', "event_type", "actor1", "actor2", "location", "source"]).agg(
         intensity=('event_id_cnty', 'count'),
         fatalities=('fatalities', 'sum')
     ).reset_index()
-
-    # st.dataframe(heatmap_data)
-
-    # heatmap_data = heatmap_data[heatmap_data['event_type'].isin(selected_event_types)]
-
-    filtered_data = heatmap_data[heatmap_data['event_date'] == selected_date]
 
     tooltip_cols = [
         "event_type", 
         "actor1", "actor2", "location", "source", "fatalities"
     ]
 
-    filtered_data, hover_text = get_tooltip(filtered_data, tooltip_cols)
+    # filtered_data, hover_text = get_tooltip(filtered_data, tooltip_cols)
+    filtered_data, hover_text = get_tooltip(heatmap_data, tooltip_cols)
 
     fig = go.Figure()
 
@@ -233,5 +243,3 @@ def generate_fatalities_by_event_type(df):
     )
 
     return area_chart + news_markers + news_hit_area
-
-
