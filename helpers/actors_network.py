@@ -160,6 +160,7 @@ def main(df):
         st.markdown("### **Conflict Event Details**")
         df_filtered['event_date'] = df_filtered['event_date'].apply(lambda x: x.strftime('%Y-%m-%d'))
         df_filtered.rename(columns={'event_date':'Event Date','notes':'Event Description'},inplace=True)
+        df_filtered = df_filtered.sort_values(by='Event Date')
 
         column_config = {
             "Event Date": st.column_config.DateColumn("Event Date", width="small"),

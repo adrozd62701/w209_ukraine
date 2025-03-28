@@ -41,9 +41,13 @@ def generate_fatalities_by_event_type(df):
 
     color_scale = alt.Scale(domain=list(color_mapping.keys()), range=list(color_mapping.values()))
 
+    
     # Area Chart
     area_chart = alt.Chart(weekly_data).mark_area(opacity=0.7).encode(
-        x=alt.X("week:T", title="Week"),
+        x=alt.X("week:T", 
+                title="Week of", 
+                axis=alt.Axis(format="%m/%d/%Y", ticks=True, tickCount="month"),
+               ),
         y=alt.Y("fatalities:Q", title="Total Fatalities"),
         color=alt.Color("event_type:N", title="Event Type", scale=color_scale,
                         legend=alt.Legend(
@@ -52,18 +56,20 @@ def generate_fatalities_by_event_type(df):
                             titleAnchor="middle"  # Center the legend title
                         )),
         tooltip=[
-            alt.Tooltip("week:T", title="Week"),
+            alt.Tooltip("week:T", title="Week of"),
             alt.Tooltip("event_type:N", title="Event Type"),
             alt.Tooltip("fatalities:Q", title="Fatalities"),
             alt.Tooltip("description:N", title="Major News"),            
-            alt.Tooltip("url:N", title="URL")
-
-        ]
+            # alt.Tooltip("url:N", title="URL"),
+            ],
+        # href='url'
     ).properties(
         title="Fatalities by Event Type",
         width=700,
         height=500
     )
+
+
 
     news_points = weekly_data[weekly_data["description"] != ""]
 
@@ -72,27 +78,31 @@ def generate_fatalities_by_event_type(df):
         x="week:T",
         y="fatalities:Q",
         tooltip=[
-            alt.Tooltip("week:T", title="Week"),
+            alt.Tooltip("week:T", title="Week of"),
             alt.Tooltip("event_type:N", title="Event Type"),
             alt.Tooltip("fatalities:Q", title="Fatalities"),
             alt.Tooltip("description:N", title="Major News"),
-            alt.Tooltip("url:N", title="URL")
+            # alt.Tooltip("url:N", title="URL")
 
         ]
     )
+
+    url_selection = alt.selection_point(fields=['url'],nearest=False, on='click')
 
     # Larger invisible hit area for better interaction
     news_hit_area = alt.Chart(news_points).mark_point(size=1000, opacity=0).encode(
         x="week:T",
         y="fatalities:Q",
         tooltip=[
-            alt.Tooltip("week:T", title="Week"),
+            alt.Tooltip("week:T", title="Week of"),
             alt.Tooltip("event_type:N", title="Event Type"),
             alt.Tooltip("fatalities:Q", title="Fatalities"),
             alt.Tooltip("description:N", title="Major News"),
-            alt.Tooltip("url:N", title="URL")
+            # alt.Tooltip("url:N", title="URL")
 
         ]
-    )
+    ).add_params(url_selection)
 
     return area_chart + news_markers + news_hit_area
+
+
