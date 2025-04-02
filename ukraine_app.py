@@ -9,7 +9,7 @@ import helpers.additional_resources
 import os
 from datetime import timedelta
 
-data_path = os.path.join(os.path.dirname(__file__),"data","Ukraine_Black_Sea_2020_2025_Jan24.csv.gz")
+data_path = os.path.join(os.path.dirname(__file__),"data","Ukraine_Black_Sea_2020_2025_Mar28.csv.gz")
 
 
 st.set_page_config(layout="centered")
@@ -83,6 +83,10 @@ with tab2:
 
 
     st.markdown("### **Conflict Map**")
+    st.write("This page features an interactive map that highlights the intensity "
+        "and distribution of conflict events across Ukraine. By utilizing a heatmap overlay, users can visualize "
+        "concentrations of conflict-related incidents, providing a clear picture of the most affected areas. The timeline slider allows navigation through the conflict chronologically, month by month. Users can also apply filters to differentiate between various event types and subtypes, and distinguish civilian versus non-civilian targeting. Hover over specific points to get detailed information about each incident, including fatalities and involved actors, offering a deeper insight into the human cost and strategic movements within the region.")
+    
     disorder_type = st.selectbox('Disorder Type:', ['All'] + sorted(data['disorder_type'].unique().tolist()))
     event_type = st.selectbox('Event Type:', ['All'] + sorted(data['event_type'].unique().tolist()))
     sub_event_type = st.selectbox('Sub Event Type:', ['All'] + sorted(data['sub_event_type'].unique().tolist()))
@@ -102,13 +106,22 @@ with tab2:
     st.plotly_chart(conflict_map_fig, use_container_width=True)
 
 with tab3:
-
+    st.markdown("### **Human Cost**")    
+    st.write("The Human Cost page visualizes the conflict's fatalities. Use this timeline to "
+        "better understand when and in what context those deaths occurred. Filter by Event Type in the sidebar, "
+        "and hover over marked points to see major news headlines.")
+    
     area_chart = helpers.human_cost.generate_fatalities_by_event_type(merged_data)
     
     # Show charts in Streamlit
     st.altair_chart(area_chart, use_container_width=True)
 
 with tab4:
+    st.markdown("### **Actors Network**")
+    st.write("This page shows conflict events between two selected actors by utilizing a bar "
+        "chart that displays each actor’s event count and a heatmap to track trends over time. There is also a "
+        "capability to filter the data by year, month, and keyword to easily drill down into specific details of the conflict events.")
+    
     helpers.actors_network.main(data)
 
 with tab5:

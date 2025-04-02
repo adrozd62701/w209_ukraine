@@ -36,7 +36,7 @@ def load_data(data_path):
     # data_path = 'data/Ukraine_Black_Sea_2020_2025_Jan24.csv.gz'
     data = pd.read_csv(data_path, compression='gzip')
     data = data[data["event_date"] >= "2022-01-01"]
-    data = data.iloc[:,2:]
+    data = data.iloc[:,1:]
 
     with open('data/ukraine_border.geojson') as f:
         ukraine_geojson = json.load(f)
