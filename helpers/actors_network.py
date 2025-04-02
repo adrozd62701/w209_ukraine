@@ -36,9 +36,9 @@ def main(df):
     
     actor_options = ["(None)"] + sorted(actor_options)
     
-    st.sidebar.markdown("### **Select Two Actors**")
-    selected_actor1 = st.sidebar.selectbox("Actor 1", actor_options, index=0)
-    selected_actor2 = st.sidebar.selectbox("Actor 2", actor_options, index=0)
+    st.markdown("### **Select Two Actors**")
+    selected_actor1 = st.selectbox("Actor 1", actor_options, index=0)
+    selected_actor2 = st.selectbox("Actor 2", actor_options, index=0)
 
     if selected_actor1 == "(None)" or selected_actor2 == "(None)":
         st.warning("Please pick two actors to begin")
@@ -126,7 +126,7 @@ def main(df):
             heatmap_data["month_name"] = heatmap_data["month"].apply(lambda x: calendar.month_abbr[x])  # Short names: "Jan", "Feb", etc.
 
             heatmap_chart = alt.Chart(heatmap_data).mark_rect().encode(
-                x=alt.X("month_name:O", title="Month", axis=alt.Axis(labelAngle=0, labelLimit=60)),
+                x=alt.X("month:O", title="Month", axis=alt.Axis(labelAngle=0, labelLimit=60)),
                 y=alt.Y("year:O", title="Year"),
                 color=alt.Color(
                     "count:Q", 
@@ -134,7 +134,7 @@ def main(df):
                     title="Event Count",
                     legend=alt.Legend(labelLimit=1000, labelOverlap="greedy")
                 ),
-                tooltip=["year", "month_name", "count"]
+                tooltip=["year", "month", "count"]
             ).properties(width=600, height=400)
             
             st.altair_chart(heatmap_chart, use_container_width=True)

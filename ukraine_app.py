@@ -12,7 +12,7 @@ from datetime import timedelta
 data_path = os.path.join(os.path.dirname(__file__),"data","Ukraine_Black_Sea_2020_2025_Jan24.csv.gz")
 
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="centered")
 
 st.markdown(
     """<style>
@@ -63,11 +63,18 @@ tab1, tab2, tab3, tab4 = st.tabs(["Conflict Map","Human Cost","Actors Network","
 
 # with st.container():
 with tab1:
-    st.sidebar.markdown("### **Conflict Map**")
-    disorder_type = st.sidebar.selectbox('Disorder Type:', ['All'] + sorted(data['disorder_type'].unique().tolist()))
-    event_type = st.sidebar.selectbox('Event Type:', ['All'] + sorted(data['event_type'].unique().tolist()))
-    sub_event_type = st.sidebar.selectbox('Sub Event Type:', ['All'] + sorted(data['sub_event_type'].unique().tolist()))
-    civilian_targeting = st.sidebar.selectbox('Civilian Targeting:', ['All', 'Civilian targeting', 'Non-civilian targeting'])
+    # st.sidebar.markdown("### **Conflict Map**")
+    # disorder_type = st.sidebar.selectbox('Disorder Type:', ['All'] + sorted(data['disorder_type'].unique().tolist()))
+    # event_type = st.sidebar.selectbox('Event Type:', ['All'] + sorted(data['event_type'].unique().tolist()))
+    # sub_event_type = st.sidebar.selectbox('Sub Event Type:', ['All'] + sorted(data['sub_event_type'].unique().tolist()))
+    # civilian_targeting = st.sidebar.selectbox('Civilian Targeting:', ['All', 'Civilian targeting', 'Non-civilian targeting'])
+
+
+    st.markdown("### **Conflict Map**")
+    disorder_type = st.selectbox('Disorder Type:', ['All'] + sorted(data['disorder_type'].unique().tolist()))
+    event_type = st.selectbox('Event Type:', ['All'] + sorted(data['event_type'].unique().tolist()))
+    sub_event_type = st.selectbox('Sub Event Type:', ['All'] + sorted(data['sub_event_type'].unique().tolist()))
+    civilian_targeting = st.selectbox('Civilian Targeting:', ['All', 'Civilian targeting', 'Non-civilian targeting'])
     
     selected_date = st.slider(
         "Select a date:",
@@ -77,7 +84,7 @@ with tab1:
         format="MM/DD/YYYY",
         step=timedelta(days=30)  # Approximation for one month
     )
-    st.sidebar.divider()
+    # st.sidebar.divider()
     st.write(" ")
     conflict_map_fig = helpers.conflict_map.generate_conflict_map(data, selected_date, ukraine_geojson, disorder_type, event_type, sub_event_type, civilian_targeting)
     st.plotly_chart(conflict_map_fig, use_container_width=True)

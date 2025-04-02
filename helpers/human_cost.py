@@ -30,9 +30,10 @@ def generate_fatalities_by_event_type(df):
     }
 
     # Create Streamlit dropdown
-    st.sidebar.markdown("### **Human Cost**")
-    selected_event_type = st.sidebar.radio("Select Event Type:", event_types, index=0, horizontal=False)
-    st.sidebar.divider()
+    st.markdown("### **Human Cost**")
+    # selected_event_type = st.sidebar.radio("Select Event Type:", event_types, index=0, horizontal=False)
+    selected_event_type = st.radio("Select Event Type:", event_types, index=0, horizontal=False)
+    # st.sidebar.divider()
 
     # Apply filtering logic
     if selected_event_type != "All Event Types":
@@ -51,8 +52,8 @@ def generate_fatalities_by_event_type(df):
         y=alt.Y("fatalities:Q", title="Total Fatalities"),
         color=alt.Color("event_type:N", title="Event Type", scale=color_scale,
                         legend=alt.Legend(
-                            orient="top",  # Move legend to bottom
-                            direction="horizontal",  # Arrange legend items horizontally
+                            orient="bottom",  # Move legend to bottom
+                            # direction="horizontal",  # Arrange legend items horizontally
                             titleAnchor="middle"  # Center the legend title
                         )),
         tooltip=[
