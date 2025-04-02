@@ -23,21 +23,12 @@ div[class*="stSlider"] > label > div[data-testid="stMarkdownContainer"] > p {
     """, unsafe_allow_html=True)
 
 st.title("The Conflict in Ukraine")
-st.header("Welcome to our app!")
-st.write("This app tells the story of the conflict in Ukraine through data visualizations.")
-st.write("Please explore the interactive visualizations on our website:")
-st.write("**Conflict Map:** This page features an interactive map that highlights the intensity and distribution of conflict events across Ukraine. By utilizing a heatmap overlay, users can visualize concentrations of conflict-related incidents, providing a clear picture of the most affected areas. The timeline slider allows navigation through the conflict chronologically, month by month. Users can also apply filters to differentiate between various event types and subtypes, and distinguish civilian versus non-civilian targeting. Hover over specific points to get detailed information about each incident, including fatalities and involved actors, offering a deeper insight into the human cost and strategic movements within the region.")
-st.write("**Human Cost:** The Human Cost page visualizes the conflict's fatalities. Use this timeline to better understand when and in what context those deaths occurred. Filter by Event Type in the sidebar, and hover over marked points to see major news headlines.")
-st.write("**Actors Network:** This page shows conflict events between two selected actors by utilizing a bar chart that displays each actor’s event count and a heatmap to track trends over time. There is also a capability to filter the data by year, month, and keyword to easily drill down into specific details of the conflict events.")
-st.write("**Additional Resources:** The final tab on this website has additional resources pertaining to the conflict in Ukraine")
 
 data, ukraine_geojson = helpers.data_loading.load_data(data_path)
 news = helpers.data_loading.load_news()
 
 
 timeline_image = helpers.data_loading.load_timeline_image()
-
-st.image(timeline_image)
 
 
 merged_data = helpers.data_loading.merge_news(data,news)
@@ -59,10 +50,31 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-tab1, tab2, tab3, tab4 = st.tabs(["Conflict Map","Human Cost","Actors Network","Additional Resources"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Home", "Conflict Map","Human Cost","Actors Network","Additional Resources"])
 
 # with st.container():
 with tab1:
+    st.header("Welcome to our app!")
+    st.write("This app tells the story of the conflict in Ukraine through data visualizations.")
+    st.write("Our data comes from the [Armed Conflict Location & Event Data (ACLED)](https://acleddata.com). The ACLED is a disaggregated data collection,"
+        "analysis, and crisis mapping initiative. ACLED collects information on the dates, actors, locations, fatalities, "
+        "and types of all reported political violence and protest events around the world.")
+    st.write("Please explore the interactive visualizations on our website:")
+    st.write("**Conflict Map:** This page features an interactive map that highlights the intensity "
+        "and distribution of conflict events across Ukraine. By utilizing a heatmap overlay, users can visualize "
+        "concentrations of conflict-related incidents, providing a clear picture of the most affected areas. The timeline slider allows navigation through the conflict chronologically, month by month. Users can also apply filters to differentiate between various event types and subtypes, and distinguish civilian versus non-civilian targeting. Hover over specific points to get detailed information about each incident, including fatalities and involved actors, offering a deeper insight into the human cost and strategic movements within the region.")
+    st.write("**Human Cost:** The Human Cost page visualizes the conflict's fatalities. Use this timeline to "
+        "better understand when and in what context those deaths occurred. Filter by Event Type in the sidebar, "
+        "and hover over marked points to see major news headlines.")
+    st.write("**Actors Network:** This page shows conflict events between two selected actors by utilizing a bar "
+        "chart that displays each actor’s event count and a heatmap to track trends over time. There is also a "
+        "capability to filter the data by year, month, and keyword to easily drill down into specific details of the conflict events.")
+    st.write("**Additional Resources:** The final tab on this website has additional resources pertaining to the conflict in Ukraine")
+
+    st.image(timeline_image)
+
+
+with tab2:
     # st.sidebar.markdown("### **Conflict Map**")
     # disorder_type = st.sidebar.selectbox('Disorder Type:', ['All'] + sorted(data['disorder_type'].unique().tolist()))
     # event_type = st.sidebar.selectbox('Event Type:', ['All'] + sorted(data['event_type'].unique().tolist()))
@@ -89,15 +101,15 @@ with tab1:
     conflict_map_fig = helpers.conflict_map.generate_conflict_map(data, selected_date, ukraine_geojson, disorder_type, event_type, sub_event_type, civilian_targeting)
     st.plotly_chart(conflict_map_fig, use_container_width=True)
 
-with tab2:
+with tab3:
 
     area_chart = helpers.human_cost.generate_fatalities_by_event_type(merged_data)
     
     # Show charts in Streamlit
     st.altair_chart(area_chart, use_container_width=True)
 
-with tab3:
+with tab4:
     helpers.actors_network.main(data)
 
-with tab4:
+with tab5:
     helpers.additional_resources.main()
