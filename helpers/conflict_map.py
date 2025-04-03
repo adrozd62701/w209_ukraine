@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+import streamlit as st
 
 def get_tooltip(filtered_data, tooltip_cols):
     filtered_data[tooltip_cols] = filtered_data[tooltip_cols].fillna("")
@@ -16,7 +17,7 @@ def generate_conflict_map(df, selected_date, ukraine_geojson, disorder_type, eve
     # Filter data based on the month and year of the selected date
     selected_period = pd.to_datetime(selected_date).to_period('M')
     df = df[df['month_year'] == selected_period]
-    
+
     # Apply filters based on the widgets' current settings
     if disorder_type != 'All':
         df = df[df['disorder_type'] == disorder_type]
