@@ -101,7 +101,8 @@ def generate_fatalities_by_event_type(df):
             alt.Tooltip("description:N", title="Major News"),
             # alt.Tooltip("url:N", title="URL")
 
-        ]
+        ],
+        href='url'
     ).add_params(url_selection)
 
     return area_chart + news_markers + news_hit_area
