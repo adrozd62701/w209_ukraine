@@ -1,171 +1,170 @@
 import streamlit as st
+import streamlit as st
 import pandas as pd
 import altair as alt
+import plotly.graph_objects as go
 import re
 import calendar
+from datetime import datetime
 
-def main(df):
-    
-    # st.set_page_config(layout="wide")  
+def main():
+    st.set_page_config(layout="wide")
+    st.title("Conflict Events (Battles) Between Groups")
 
-    # st.title("Conflict Events (Battles) Between Actors")
-    
-    # df = pd.read_csv("Jan24_ACLED.gz", compression="gzip")
-    
-    # --------------------------------------------------------------------------------
-    # 1. Filter Data for Battles and Prepare Columns
-    # --------------------------------------------------------------------------------
+    df = pd.read_csv("Jan24_ACLED.gz", compression="gzip")
+
+    # Filter and prep
     df = df[df["event_type"] == "Battles"].copy()
     df["event_date"] = pd.to_datetime(df["event_date"], errors="coerce")
     df["year"] = df["event_date"].dt.year
     df["month"] = df["event_date"].dt.month
-    
-    def simplify_actor_name(name):
+
+    def simplify_group(name):
+        if pd.isnull(name):
+            return ""
         name = re.sub(r"\(\d{4}-?\d{0,4}\)", "", name).strip()
         name = re.sub(r"\b(International Legion|Main Directorate of Intelligence|Navy|1st Donetsk Army Corps|Territorial Defense Forces|Air Force|National Guard|Marines|State Border Guard Service|Special Forces|Chechen Battalion of Ramzan Kadyrov|2nd Luhansk Army Corps|Federal Security Service|Security Service of Ukraine|Kastus Kalinouski Regiment|Municipal Guard|Aidar Battallion|State Emergency Service of Ukraine)\b", "", name, flags=re.IGNORECASE).strip()
-        return name
+        name = re.sub(r"\s{2,}", " ", name).strip()
+        return name if name else "Unknown"
 
-    df["actor1"] = df["actor1"].apply(simplify_actor_name)
-    df["actor2"] = df["actor2"].apply(simplify_actor_name)
+    df["actor1"] = df["actor1"].apply(simplify_group)
+    df["actor2"] = df["actor2"].apply(simplify_group)
 
-    # --------------------------------------------------------------------------------
-    # 2. Actor Selection
-    # --------------------------------------------------------------------------------
-    all_actors = pd.unique(df[["actor1", "actor2"]].values.ravel("K"))
-    actor_options = [a for a in all_actors if pd.notnull(a)]
-    
-    actor_options = ["(None)"] + sorted(actor_options)
-    
-    st.markdown("### **Select Two Actors**")
-    selected_actor1 = st.selectbox("Actor 1", actor_options, index=0)
-    selected_actor2 = st.selectbox("Actor 2", actor_options, index=0)
+    # Valid groups
+    group_counts = pd.concat([df["actor1"], df["actor2"]]).value_counts()
+    valid_groups = sorted([g for g in group_counts.index if g and group_counts[g] > 0])
 
-    if selected_actor1 == "(None)" or selected_actor2 == "(None)":
-        st.warning("Please pick two actors to begin")
-        # st.stop()
-    
-    if (selected_actor1 == selected_actor2) & ((selected_actor1 != "(None)")|(selected_actor2 != "(None)")):
-        st.warning("The two actors must be different")
-        # st.stop()
-    if (selected_actor1 != "(None)")&(selected_actor2 != "(None)")&(selected_actor1!=selected_actor2):
-        # --------------------------------------------------------------------------------
-        # 3. Filter Rows Where both Selected Actors Are Present
-        # --------------------------------------------------------------------------------
-        mask_actors = (
-            ((df["actor1"] == selected_actor1) | (df["actor2"] == selected_actor1)) &
-            ((df["actor1"] == selected_actor2) | (df["actor2"] == selected_actor2))
-        )
-        df_actors = df[mask_actors].copy()
+    st.markdown("### **Select Two Groups**")
+    st.info("Groups represent organized forces involved in battles, such as military units, paramilitaries, and other organizations")
 
-        # --------------------------------------------------------------------------------
-        # 4. If No Events, Display a Message and Stop
-        # --------------------------------------------------------------------------------
-        if df_actors.empty:
-            st.warning("No events detected between groups")
-            # st.stop()
-        else:
+    selected_group1 = st.selectbox("Select Primary Group", ["None"] + valid_groups, index=0)
 
-            # --------------------------------------------------------------------------------
-            # 5. Display Total Events Between Actors
-            # --------------------------------------------------------------------------------
-            total_events = len(df_actors)
-            st.markdown(f"**Total conflict events between {selected_actor1} and {selected_actor2}: {total_events}**")
+    if selected_group1 != "None":
+        compatible_df = df[(df["actor1"] == selected_group1) | (df["actor2"] == selected_group1)]
+        compatible_list = pd.unique(compatible_df[["actor1", "actor2"]].values.ravel("K"))
+        compatible_list = sorted([g for g in compatible_list if g and g != selected_group1])
+    else:
+        compatible_list = valid_groups
 
-            # --------------------------------------------------------------------------------
-            # 6. Bar Chart: Count Events Where the Actor Appears as Actor1
-            #    (Always show both actors, even if one has zero events)
-            # --------------------------------------------------------------------------------
-            df_bar = df_actors[df_actors["actor1"].isin([selected_actor1, selected_actor2])]
-            counts_series = df_bar["actor1"].value_counts()
+    selected_group2 = st.selectbox("Select Opposing Group", ["None"] + compatible_list, index=0)
 
-            actor_counts = counts_series.reindex([selected_actor1, selected_actor2], fill_value=0).reset_index()
-            actor_counts.columns = ["actor", "count"]
+    if selected_group1 == "None" or selected_group2 == "None":
+        st.warning("Please select both groups to proceed.")
+        return
 
-            st.subheader("**Conflict Events Instigated by each Actor**")
-            
+    # Filter events between selected groups
+    mask_groups = (
+        ((df["actor1"] == selected_group1) | (df["actor2"] == selected_group1)) &
+        ((df["actor1"] == selected_group2) | (df["actor2"] == selected_group2))
+    )
+    df_groups = df[mask_groups].copy()
 
-            sorted_actors = actor_counts.sort_values("count", ascending=False)["actor"].tolist()
+    if df_groups.empty:
+        st.warning("No events detected between the selected groups.")
+        return
 
-            bar_chart = (
-            alt.Chart(actor_counts)
-            .mark_bar()
-            .encode(
-                x=alt.X(
-                    "actor:O",
-                    sort=sorted_actors,  
-                    title="Actor",
-                    axis=alt.Axis(labelAngle=0, labelLimit=500, labelOverlap="greedy")
-                ),
-                y=alt.Y("count:Q", title="Number of Events"),
-                tooltip=["actor", "count"],
-                color=alt.Color(
-                    "actor:N",
-                    scale=alt.Scale(domain=sorted_actors, range=["#1f77b4", "#aec7e8"]),
-                    legend=alt.Legend(labelLimit=1000, labelOverlap="greedy", orient="top")
-                )
+    total_events = len(df_groups)
+    st.markdown(f"**Total conflict events between `{selected_group1}` and `{selected_group2}`: {total_events}**")
+
+    # Bar Chart: Conflict Initiation by Group
+    st.subheader(f"**Conflict Initiation Comparision between Groups**")
+    st.markdown("""
+    This bar graph shows the number of conflict events each group **initiated**.  
+    """)
+
+    initiations = df_groups.groupby("actor1").size().reset_index(name="count")
+    initiations = initiations[initiations["actor1"].isin([selected_group1, selected_group2])]
+
+    # Ensure both groups are represented even if one has 0 events
+    group_event_counts = {
+        selected_group1: initiations[initiations["actor1"] == selected_group1]["count"].sum(),
+        selected_group2: initiations[initiations["actor1"] == selected_group2]["count"].sum(),
+    }
+
+    # Order by most initiations: first = red, second = blue
+    sorted_groups = sorted(group_event_counts.items(), key=lambda x: -x[1])
+    bar_data = pd.DataFrame({
+        "Group": [g[0] for g in sorted_groups],
+        "Initiated Events": [g[1] for g in sorted_groups],
+        "Color": ["indianred", "steelblue"]
+    })
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        x=bar_data["Group"],
+        y=bar_data["Initiated Events"],
+        marker_color=bar_data["Color"],
+        text=bar_data["Initiated Events"],
+        textposition="auto",
+        name="Events Initiated"
+    ))
+
+    for i, row in bar_data.iterrows():
+        if row["Initiated Events"] == 0:
+            fig.add_annotation(
+                x=row["Group"],
+                y=0,
+                text="No initiated events",
+                showarrow=False,
+                font=dict(color="gray", size=12),
+                yshift=20
             )
-            .properties(width=800, height=400)
-            )
 
+    fig.update_layout(
+        yaxis_title="Number of Events Initiated",
+        xaxis_title="Group",
+        margin=dict(l=10, r=10, t=30, b=10),
+        height=400
+    )
 
-            st.altair_chart(bar_chart, use_container_width=False)
-            
-            # --------------------------------------------------------------------------------
-            # 7. Heatmap: Events by Month and Year (Only Years with Events)
-            # --------------------------------------------------------------------------------
-            st.subheader("**Heatmap: Conflict Events by Month and Year between the Actors**")
-            
-            years_with_events = sorted(df_actors["year"].unique())
-            months = list(range(1, 13))
-            
-            grid = pd.DataFrame([(y, m) for y in years_with_events for m in months], columns=["year", "month"])
-            
-            counts = df_actors.groupby(["year", "month"]).size().reset_index(name="count")
-            heatmap_data = pd.merge(grid, counts, on=["year", "month"], how="left").fillna(0)
-            
-            heatmap_data["month_name"] = heatmap_data["month"].apply(lambda x: calendar.month_abbr[x])  # Short names: "Jan", "Feb", etc.
+    st.plotly_chart(fig, use_container_width=True)
 
-            heatmap_chart = alt.Chart(heatmap_data).mark_rect().encode(
-                x=alt.X("month:O", title="Month", axis=alt.Axis(labelAngle=0, labelLimit=60)),
-                y=alt.Y("year:O", title="Year"),
-                color=alt.Color(
-                    "count:Q", 
-                    scale=alt.Scale(scheme="blues"), 
-                    title="Event Count",
-                    legend=alt.Legend(labelLimit=1000, labelOverlap="greedy")
-                ),
-                tooltip=["year", "month", "count"]
-            ).properties(width=600, height=400)
-            
-            st.altair_chart(heatmap_chart, use_container_width=True)
-            
-            # --------------------------------------------------------------------------------
-            # 8. Filter Events by Selected Year, Month, and Keyword
-            # --------------------------------------------------------------------------------
-            st.subheader("**Filter Conflict Events by Year, Month, and Keyword**")
-            
-            month_names = {m: calendar.month_name[m] for m in months}
+    # Heatmap of Monthly Activity
+    st.subheader("**Heatmap: Conflict Events by Month and Year**")
+    st.markdown("""
+    This heatmap shows the **number of conflict events per month and year** between the selected groups.  
+    It helps highlight **seasonal or yearly conflict trends**.
+    """)
 
-            selected_heatmap_year = st.selectbox("Select Year", years_with_events)
-            selected_heatmap_month = st.selectbox("Select Month", options=months, format_func=lambda m: month_names[m])
-            keyword = st.text_input("Enter a keyword to filter conflict events")
-            
-            df_filtered = df_actors[
-                (df_actors["year"] == selected_heatmap_year) &
-                (df_actors["month"] == selected_heatmap_month)
-            ].copy()
+    years = sorted(df_groups["year"].dropna().unique())
+    months = list(range(1, 13))
+    grid = pd.DataFrame([(y, m) for y in years for m in months], columns=["year", "month"])
 
-            if keyword:
-                df_filtered = df_filtered[df_filtered["notes"].str.contains(keyword, case=False, na=False)]
+    monthly_counts = df_groups.groupby(["year", "month"]).size().reset_index(name="count")
+    heatmap_data = pd.merge(grid, monthly_counts, on=["year", "month"], how="left").fillna(0)
 
-            st.markdown("### **Conflict Event Details**")
-            df_filtered['event_date'] = df_filtered['event_date'].apply(lambda x: x.strftime('%Y-%m-%d'))
-            df_filtered.rename(columns={'event_date':'Event Date','notes':'Event Description'},inplace=True)
-            df_filtered = df_filtered.sort_values(by='Event Date')
+    # Add date column and flag for future months
+    heatmap_data["date"] = pd.to_datetime(dict(year=heatmap_data.year, month=heatmap_data.month, day=1))
+    cutoff_date = datetime(2025, 1, 31)
+    heatmap_data["data_status"] = heatmap_data["date"].apply(
+        lambda x: "Data Pending" if x > cutoff_date else "Data Available"
+    )
 
-            column_config = {
-                "Event Date": st.column_config.DateColumn("Event Date", width="small"),
-                "Event Description": st.column_config.TextColumn("Event Description", width="medium")
-            }
+    heatmap_data["display_count"] = heatmap_data.apply(
+        lambda row: None if row["data_status"] == "Data Pending" else row["count"], axis=1
+    )
 
-            st.dataframe(df_filtered[["Event Date", "Event Description"]].reset_index(drop=True), hide_index=True, column_config=column_config)
+    heatmap_data["month_name"] = heatmap_data["month"].apply(lambda x: calendar.month_abbr[x])
+    month_order = list(calendar.month_abbr[1:])
+
+    heatmap = alt.Chart(heatmap_data).mark_rect().encode(
+        x=alt.X("month_name:O", sort=month_order, title="Month"),
+        y=alt.Y("year:O", title="Year"),
+        color=alt.condition(
+            alt.datum.data_status == "Data Pending",
+            alt.value("white"),
+            alt.Color("display_count:Q", scale=alt.Scale(scheme="cividis"), title="Event Count")
+        ),
+        tooltip=[
+            alt.Tooltip("year:O", title="Year"),
+            alt.Tooltip("month_name:O", title="Month"),
+            alt.Tooltip("count:Q", title="Event Count"),
+            alt.Tooltip("data_status:N", title="Status")
+        ]
+    ).properties(width=700, height=400)
+
+    st.altair_chart(heatmap, use_container_width=True)
+
+if __name__ == "__main__":
+    main()
