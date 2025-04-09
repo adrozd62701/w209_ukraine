@@ -7,11 +7,11 @@ import re
 import calendar
 from datetime import datetime
 
-def main():
-    st.set_page_config(layout="wide")
+def main(df):
+    # st.set_page_config(layout="wide")
     st.title("Conflict Events (Battles) Between Groups")
 
-    df = pd.read_csv("Jan24_ACLED.gz", compression="gzip")
+    # df = pd.read_csv("Jan24_ACLED.gz", compression="gzip")
 
     # Filter and prep
     df = df[df["event_type"] == "Battles"].copy()
@@ -136,7 +136,7 @@ def main():
 
     # Add date column and flag for future months
     heatmap_data["date"] = pd.to_datetime(dict(year=heatmap_data.year, month=heatmap_data.month, day=1))
-    cutoff_date = datetime(2025, 1, 31)
+    cutoff_date = datetime(2025, 3, 31)
     heatmap_data["data_status"] = heatmap_data["date"].apply(
         lambda x: "Data Pending" if x > cutoff_date else "Data Available"
     )
