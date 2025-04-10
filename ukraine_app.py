@@ -56,10 +56,14 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(["Home", "Conflict Map","Human Cost","Act
 # with st.container():
 with tab1:
     st.header("Welcome to our app!")
-    st.write("This app tells the story of the conflict in Ukraine through data visualizations.")
-    st.write("Our data comes from the [Armed Conflict Location & Event Data (ACLED)](https://acleddata.com). The ACLED is a disaggregated data collection, "
+    st.write("**Authors:** Akanksha Chattopadhyay, Alice Drozd, Sooyeon Kim, Rina Palta")
+    st.write("This app tells the story of the conflict in Ukraine through data visualizations. " \
+        "Our data comes from the [Armed Conflict Location & Event Data (ACLED)](https://acleddata.com). The ACLED is a disaggregated data collection, "
         "analysis, and crisis mapping initiative. ACLED collects information on the dates, actors, locations, fatalities, "
         "and types of all reported political violence and protest events around the world.")
+    
+    st.image(timeline_image)
+    st.divider()
     st.write("Please explore the interactive visualizations on our website:")
     st.write("**Conflict Map:** This page features an interactive map that highlights the intensity "
         "and distribution of conflict events across Ukraine. By utilizing a heatmap overlay, users can visualize "
@@ -72,7 +76,6 @@ with tab1:
         "capability to filter the data by year, month, and keyword to easily drill down into specific details of the conflict events.")
     st.write("**Additional Resources:** The final tab on this website has additional resources pertaining to the conflict in Ukraine")
 
-    st.image(timeline_image)
 
 
 with tab2:
