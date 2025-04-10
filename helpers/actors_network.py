@@ -67,7 +67,7 @@ def main(df):
     st.markdown(f"**Total conflict events between `{selected_group1}` and `{selected_group2}`: {total_events}**")
 
     # Bar Chart: Conflict Initiation by Group
-    st.subheader(f"**Conflict Initiation Comparision between Groups**")
+    st.subheader(f"**Conflict Initiation Comparison between Groups**")
     st.markdown("""
     This bar graph shows the number of conflict events each group **initiated**.  
     """)
