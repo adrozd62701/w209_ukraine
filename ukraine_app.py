@@ -25,6 +25,7 @@ div[class*="stSlider"] > label > div[data-testid="stMarkdownContainer"] > p {
 st.title("The Conflict in Ukraine")
 
 data, ukraine_geojson = helpers.data_loading.load_data(data_path)
+# st.dataframe(data.sort_values(by='event_date',ascending=False))
 news = helpers.data_loading.load_news()
 
 
