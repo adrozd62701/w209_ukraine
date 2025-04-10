@@ -57,7 +57,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(["Home", "Conflict Map","Human Cost","Act
 with tab1:
     st.header("Welcome to our app!")
     st.write("This app tells the story of the conflict in Ukraine through data visualizations.")
-    st.write("Our data comes from the [Armed Conflict Location & Event Data (ACLED)](https://acleddata.com). The ACLED is a disaggregated data collection,"
+    st.write("Our data comes from the [Armed Conflict Location & Event Data (ACLED)](https://acleddata.com). The ACLED is a disaggregated data collection, "
         "analysis, and crisis mapping initiative. ACLED collects information on the dates, actors, locations, fatalities, "
         "and types of all reported political violence and protest events around the world.")
     st.write("Please explore the interactive visualizations on our website:")
