@@ -1,5 +1,4 @@
 import streamlit as st
-import streamlit as st
 import pandas as pd
 import altair as alt
 import plotly.graph_objects as go
@@ -64,10 +63,10 @@ def main():
         return
 
     total_events = len(df_groups)
-    st.markdown(f"**Total conflict events between `{selected_group1}` and `{selected_group2}`: {total_events}**")
+    #st.markdown(f"**Total conflict events between `{selected_group1}` and `{selected_group2}`: {total_events}**")
 
     # Bar Chart: Conflict Initiation by Group
-    st.subheader(f"**Conflict Initiation Comparision between Groups**")
+    st.subheader(f"**Conflict Initiation Comparison between Groups**")
     st.markdown("""
     This bar graph shows the number of conflict events each group **initiated**.  
     """)
@@ -75,13 +74,11 @@ def main():
     initiations = df_groups.groupby("actor1").size().reset_index(name="count")
     initiations = initiations[initiations["actor1"].isin([selected_group1, selected_group2])]
 
-    # Ensure both groups are represented even if one has 0 events
     group_event_counts = {
         selected_group1: initiations[initiations["actor1"] == selected_group1]["count"].sum(),
         selected_group2: initiations[initiations["actor1"] == selected_group2]["count"].sum(),
     }
 
-    # Order by most initiations: first = red, second = blue
     sorted_groups = sorted(group_event_counts.items(), key=lambda x: -x[1])
     bar_data = pd.DataFrame({
         "Group": [g[0] for g in sorted_groups],
@@ -131,10 +128,13 @@ def main():
     months = list(range(1, 13))
     grid = pd.DataFrame([(y, m) for y in years for m in months], columns=["year", "month"])
 
-    monthly_counts = df_groups.groupby(["year", "month"]).size().reset_index(name="count")
+    monthly_counts = (
+    df_groups.groupby(["year", "month"], as_index=False)
+    .agg(count=("event_type", "count")))
     heatmap_data = pd.merge(grid, monthly_counts, on=["year", "month"], how="left").fillna(0)
+    heatmap_data = heatmap_data.drop_duplicates(subset=["year", "month"])
 
-    # Add date column and flag for future months
+
     heatmap_data["date"] = pd.to_datetime(dict(year=heatmap_data.year, month=heatmap_data.month, day=1))
     cutoff_date = datetime(2025, 1, 31)
     heatmap_data["data_status"] = heatmap_data["date"].apply(
@@ -146,23 +146,32 @@ def main():
     )
 
     heatmap_data["month_name"] = heatmap_data["month"].apply(lambda x: calendar.month_abbr[x])
-    month_order = list(calendar.month_abbr[1:])
+    month_order = list(calendar.month_abbr[1:])  
 
-    heatmap = alt.Chart(heatmap_data).mark_rect().encode(
-        x=alt.X("month_name:O", sort=month_order, title="Month"),
-        y=alt.Y("year:O", title="Year"),
-        color=alt.condition(
-            alt.datum.data_status == "Data Pending",
-            alt.value("white"),
-            alt.Color("display_count:Q", scale=alt.Scale(scheme="cividis"), title="Event Count")
-        ),
-        tooltip=[
-            alt.Tooltip("year:O", title="Year"),
-            alt.Tooltip("month_name:O", title="Month"),
-            alt.Tooltip("count:Q", title="Event Count"),
-            alt.Tooltip("data_status:N", title="Status")
-        ]
+    heatmap = alt.Chart(heatmap_data).mark_rect(
+    stroke='white',  
+    strokeWidth=0.5  
+    ).encode(
+    x=alt.X(
+        "month_name:O",
+        sort=month_order,
+        title="Month",
+        axis=alt.Axis(labelAngle=0),
+        scale=alt.Scale(paddingInner=0, paddingOuter=0)
+    ),
+    y=alt.Y("year:O", title="Year"),
+    color=alt.condition(
+        alt.datum.data_status == "Data Pending",
+        alt.value("#eeeeee"),  
+        alt.Color("display_count:Q", scale=alt.Scale(scheme="cividis"), title="Event Count")
+    ),
+    tooltip=[
+        alt.Tooltip("year:O", title="Year"),
+        alt.Tooltip("month_name:O", title="Month"),
+        alt.Tooltip("count:Q", title="Event Count")    ]
     ).properties(width=700, height=400)
+
+
 
     st.altair_chart(heatmap, use_container_width=True)
 
