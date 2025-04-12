@@ -1,19 +1,32 @@
-event_date,fatalities,event_type,description,url
-3/15/2022,643,Violence against civilians,Russian forces approach Kyiv.,https://www.npr.org/2022/03/15/1086671754/russia-ukraine-war-what-happened-today-march-15
-5/15/2022,206,Violence against civilians,"Russia bombs eastern Ukraine, including Severodonetsk hospital.",https://www.cnn.com/europe/live-news/russia-ukraine-war-news-05-15-22/index.html
-11/12/2022,30,Violence against civilians,Massive shelling in Avdiivka.,https://www.cnn.com/europe/live-news/russia-ukraine-war-news-11-22-22#h_2ec3d540ff6c0223ef45ab435513d62e
-10/27/2023,9,Violence against civilians,Russian drone and missile strikes pepper eastern Ukraine.,https://www.aljazeera.com/news/2023/10/27/russia-ukraine-war-list-of-key-events-day-610-2
-10/30/2023,4,Violence against civilians,Heavy attacks on Ukrainian infrastructure.,https://edition.cnn.com/europe/live-news/russia-ukraine-war-news-10-31-22/index.html
-10/1/2024,16,Violence against civilians,Russia seizes Vuhledar.,https://www.understandingwar.org/backgrounder/russian-offensive-campaign-assessment-october-1-2024
-2/24/2024,7,Violence against civilians,Heavy missile and drone strikes across Ukraine.,https://edition.cnn.com/europe/live-news/russia-ukraine-war-news-02-24-24#h_d348be11cbc8c603f8404c596a802f75
-7/8/2024,3,Violence against civilians,Russia strikes Okhmatdyt children's hospital in Kyiv.,https://www.npr.org/2024/07/08/nx-s1-5033075/russia-ukraine-war-missile-strike-childrens-hospital-kyiv
-1/23/2025,6,Violence against civilians,Russia strikes industrial facilities in Zaporizhzhia.,https://kyivindependent.com/russian-strike-on-zaporizhzhia-industrial-site-kills-1-injures-at-least-30/
-11/5/2022,512,Explosions/Remote violence,Drone attacks heat up.,https://edition.cnn.com/europe/live-news/russia-ukraine-war-news-11-05-22/index.html
-11/27/2022,485,Explosions/Remote violence,Shelling heavy as Kyiv works to restore power.,https://www.washingtonpost.com/world/2022/11/27/russia-ukraine-war-latest-updates/
-9/5/2022,454,Explosions/Remote violence,Zaporizhzhia plant goes offline due to shelling.,https://www.nytimes.com/live/2022/09/05/world/ukraine-russia-war
-3/26/2022,3,Protests,Russian soldiers encounter protesters in cities they invade.,https://www.npr.org/2022/03/26/1089018942/russia-ukraine-war-what-happened-today-march-26
-2/24/2022,5,Strategic developments,The war begins.,https://www.cnn.com/europe/live-news/ukraine-russia-news-02-24-22-intl/index.html
-9/26/2023,3,Strategic developments,Russia hits Odessa.,https://www.aljazeera.com/news/2023/9/26/russia-ukraine-war-list-of-key-events-day-580
-11/11/2023,3,Strategic developments,Kyiv targeted for the first time in 52 days.,https://www.understandingwar.org/backgrounder/russian-offensive-campaign-assessment-november-11-2023
-5/19/2024,1029,Battles,Russia continues offensive in Kharkiv.,https://www.aljazeera.com/news/2024/5/19/russian-attacks-on-ukraines-kharkiv-region-kill-at-least-11-people
-11/15/2023,678,Battles,Heavy fighting in Kherson,https://www.cnbc.com/2023/11/15/ukraine-war-live-updates-latest-news-on-russia-and-the-war-in-ukraine.html
+event_date,fatalities,event_type,description,url,
+5/19/2024,1029,Battles,Russia continues offensive in Kharkiv.,https://www.aljazeera.com/news/2024/5/19/russian-attacks-on-ukraines-kharkiv-region-kill-at-least-11-people,
+11/15/2023,678,Battles,Heavy fighting in Kherson,https://www.cnbc.com/2023/11/15/ukraine-war-live-updates-latest-news-on-russia-and-the-war-in-ukraine.html,
+3/15/2022,643,Violence against civilians,Russian forces approach Kyiv.,https://www.npr.org/2022/03/15/1086671754/russia-ukraine-war-what-happened-today-march-15,
+11/5/2022,512,Explosions/Remote violence,Drone attacks heat up.,https://edition.cnn.com/europe/live-news/russia-ukraine-war-news-11-05-22/index.html,
+11/27/2022,485,Explosions/Remote violence,Shelling heavy as Kyiv works to restore power.,https://www.washingtonpost.com/world/2022/11/27/russia-ukraine-war-latest-updates/,
+9/5/2022,454,Explosions/Remote violence,Zaporizhzhia plant goes offline due to shelling.,https://www.nytimes.com/live/2022/09/05/world/ukraine-russia-war,
+5/15/2022,206,Violence against civilians,"Russia bombs eastern Ukraine, including Severodonetsk hospital.",https://www.cnn.com/europe/live-news/russia-ukraine-war-news-05-15-22/index.html,
+11/12/2022,30,Violence against civilians,Massive shelling in Avdiivka.,https://www.cnn.com/europe/live-news/russia-ukraine-war-news-11-22-22#h_2ec3d540ff6c0223ef45ab435513d62e,
+2/27/2022,26,Violence against civilians,Russian troops enter Kharkiv,https://www.theguardian.com/world/2022/feb/27/fighting-on-streets-of-kharkiv-ukraines-second-largest-city-as-west-bars-russian-banks-from-swift,
+10/1/2024,16,Violence against civilians,Russia seizes Vuhledar.,https://www.understandingwar.org/backgrounder/russian-offensive-campaign-assessment-october-1-2024,
+10/27/2023,9,Violence against civilians,Russian drone and missile strikes pepper eastern Ukraine.,https://www.aljazeera.com/news/2023/10/27/russia-ukraine-war-list-of-key-events-day-610-2,
+2/24/2024,7,Violence against civilians,Heavy missile and drone strikes across Ukraine.,https://edition.cnn.com/europe/live-news/russia-ukraine-war-news-02-24-24#h_d348be11cbc8c603f8404c596a802f75,
+1/23/2025,6,Violence against civilians,Russia strikes industrial facilities in Zaporizhzhia.,https://kyivindependent.com/russian-strike-on-zaporizhzhia-industrial-site-kills-1-injures-at-least-30/,
+2/24/2022,5,Strategic developments,The war begins.,https://www.cnn.com/europe/live-news/ukraine-russia-news-02-24-22-intl/index.html,
+10/30/2023,4,Violence against civilians,Heavy attacks on Ukrainian infrastructure.,https://edition.cnn.com/europe/live-news/russia-ukraine-war-news-10-31-22/index.html,
+11/11/2023,3,Strategic developments,Kyiv targeted for the first time in 52 days.,https://www.understandingwar.org/backgrounder/russian-offensive-campaign-assessment-november-11-2023,
+3/26/2022,3,Protests,Russian soldiers encounter protesters in cities they invade.,https://www.npr.org/2022/03/26/1089018942/russia-ukraine-war-what-happened-today-march-26,
+7/8/2024,3,Violence against civilians,Russia strikes Okhmatdyt children's hospital in Kyiv.,https://www.npr.org/2024/07/08/nx-s1-5033075/russia-ukraine-war-missile-strike-childrens-hospital-kyiv,
+9/26/2023,3,Strategic developments,Russia hits Odessa.,https://www.aljazeera.com/news/2023/9/26/russia-ukraine-war-list-of-key-events-day-580,
+6/4/2024,632,Battles,Troops battle for control of Donbas.,https://www.kyivpost.com/thread/30672,
+1/26/2023,620,Battles,Wagner mercenaries enter Bakhmut.,https://www.aljazeera.com/news/2023/1/26/russia-ukraine-war-list-of-key-events-day-337,
+6/29/2024,618,Battles,Heavy fighting in Rozdolivka,https://www.aljazeera.com/news/2024/6/29/russia-ukraine-war-list-of-key-events-day-855,
+7/2/24,593,Battles,Heavy fighting in Donetsk region,https://www.aljazeera.com/news/2024/7/2/russia-ukraine-war-list-of-key-events-day-858,
+5/18/2024,545,Battles,Russian forces attack Chasiv Yar,https://www.understandingwar.org/backgrounder/russian-offensive-campaign-assessment-may-18-2024,
+8/26/2022,389,Explosions/Remote violence,Russia strikes train station in Chaplyne,https://www.cnn.com/europe/live-news/russia-ukraine-war-news-08-26-22/index.html,
+12/29/2022,350,Explosions/Remote violence,Russian strikes hit Kyiv,https://www.nytimes.com/live/2022/12/29/world/russia-ukraine-news,
+5/13/2022,325,Explosions/Remote violence,Russian troops withdraw from Kharkiv. ,https://www.aljazeera.com/news/2022/5/13/ukraine-readying-41-war-crimes-cases-against-russian-soldiers-liveblog,
+10/28/2022,301,Explosions/Remote violence,Russian troops advance on Bakhmut.,https://www.aljazeera.com/news/2022/10/28/russian-and-ukrainian-forces-exchange-fire-near-bakhmut,
+9/10/2022,293,Explosions/Remote violence,Bombs fall on Zaporizhzhia.,https://www.cnn.com/europe/live-news/russia-ukraine-war-news-10-09-22/index.html,
+3/3/2022,27,Violence against civilians,Bombs fall on civilians in Kharkiv,https://www.cnn.com/europe/live-news/ukraine-russia-putin-news-03-03-22/index.html,
+5/30/2022,25,Violence against civilians,Russian forces advance into Donbas holdout.,https://www.wsj.com/livecoverage/russia-ukraine-latest-news-2022-05-28,
