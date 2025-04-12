@@ -25,7 +25,6 @@ div[class*="stSlider"] > label > div[data-testid="stMarkdownContainer"] > p {
 st.title("The Conflict in Ukraine")
 
 data, ukraine_geojson = helpers.data_loading.load_data(data_path)
-# st.dataframe(data.sort_values(by='event_date',ascending=False))
 news = helpers.data_loading.load_news()
 
 
@@ -56,18 +55,12 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(["Home", "Conflict Map","Human Cost","Act
 # with st.container():
 with tab1:
     st.header("Welcome to our app!")
-    st.write("**Authors:** Akanksha Chattopadhyay, Alice Drozd, Sooyeon Kim, Rina Palta")
-    st.write("This app tells the story of the conflict in Ukraine through data visualizations. " \
-        "Our data comes from the [Armed Conflict Location & Event Data (ACLED)](https://acleddata.com). The ACLED is a disaggregated data collection, "
+    st.write("This app tells the story of the conflict in Ukraine through data visualizations.")
+    st.write("Our data comes from the [Armed Conflict Location & Event Data (ACLED)](https://acleddata.com). The ACLED is a disaggregated data collection,"
         "analysis, and crisis mapping initiative. ACLED collects information on the dates, actors, locations, fatalities, "
         "and types of all reported political violence and protest events around the world.")
-    
-    st.image(timeline_image)
-    st.divider()
     st.write("Please explore the interactive visualizations on our website:")
-    st.write("**Conflict Map:** This page features an interactive map that highlights the intensity "
-        "and distribution of conflict events across Ukraine. By utilizing a heatmap overlay, users can visualize "
-        "concentrations of conflict-related incidents, providing a clear picture of the most affected areas. The timeline slider allows navigation through the conflict chronologically, month by month. Users can also apply filters to differentiate between various event types and subtypes, and distinguish civilian versus non-civilian targeting. Hover over specific points to get detailed information about each incident, including fatalities and involved actors, offering a deeper insight into the human cost and strategic movements within the region.")
+    st.write(st.write("**Conflict Map:** This page includes two dynamic visualizations. First, an animated map shows the month-by-month progression of conflict intensity across Ukraine using a blue density heatmap. Below that, an interactive map allows users to explore specific conflict snapshots by selecting a key month. Users can filter by event type and whether civilians were targeted. Blue shading indicates general intensity, while colored markers highlight fatal events by sub-event type, sized by fatalities. Hover over each point to reveal detailed information about the incident, including actors involved, location, and source.")
     st.write("**Human Cost:** The Human Cost page visualizes the conflict's fatalities. Use this timeline to "
         "better understand when and in what context those deaths occurred. Filter by Event Type in the sidebar, "
         "and hover over marked points to see major news headlines.")
@@ -76,38 +69,12 @@ with tab1:
         "capability to filter the data by year, month, and keyword to easily drill down into specific details of the conflict events.")
     st.write("**Additional Resources:** The final tab on this website has additional resources pertaining to the conflict in Ukraine")
 
+    st.image(timeline_image)
 
 
 with tab2:
-    # st.sidebar.markdown("### **Conflict Map**")
-    # disorder_type = st.sidebar.selectbox('Disorder Type:', ['All'] + sorted(data['disorder_type'].unique().tolist()))
-    # event_type = st.sidebar.selectbox('Event Type:', ['All'] + sorted(data['event_type'].unique().tolist()))
-    # sub_event_type = st.sidebar.selectbox('Sub Event Type:', ['All'] + sorted(data['sub_event_type'].unique().tolist()))
-    # civilian_targeting = st.sidebar.selectbox('Civilian Targeting:', ['All', 'Civilian targeting', 'Non-civilian targeting'])
-
-
-    st.markdown("### **Conflict Map**")
-    st.write("This page features an interactive map that highlights the intensity "
-        "and distribution of conflict events across Ukraine. By utilizing a heatmap overlay, users can visualize "
-        "concentrations of conflict-related incidents, providing a clear picture of the most affected areas. The timeline slider allows navigation through the conflict chronologically, month by month. Users can also apply filters to differentiate between various event types and subtypes, and distinguish civilian versus non-civilian targeting. Hover over specific points to get detailed information about each incident, including fatalities and involved actors, offering a deeper insight into the human cost and strategic movements within the region.")
+    helpers.conflict_map.main(data, ukraine_geojson, min_date, max_date)
     
-    disorder_type = st.selectbox('Disorder Type:', ['All'] + sorted(data['disorder_type'].unique().tolist()))
-    event_type = st.selectbox('Event Type:', ['All'] + sorted(data['event_type'].unique().tolist()))
-    sub_event_type = st.selectbox('Sub Event Type:', ['All'] + sorted(data['sub_event_type'].unique().tolist()))
-    civilian_targeting = st.selectbox('Civilian Targeting:', ['All', 'Civilian targeting', 'Non-civilian targeting'])
-    
-    selected_date = st.slider(
-        "Select a date:",
-        min_value=min_date,
-        max_value=max_date,
-        value=min_date,
-        format="MM/DD/YYYY",
-        step=timedelta(days=30)  # Approximation for one month
-    )
-    # st.sidebar.divider()
-    st.write(" ")
-    conflict_map_fig = helpers.conflict_map.generate_conflict_map(data, selected_date, ukraine_geojson, disorder_type, event_type, sub_event_type, civilian_targeting)
-    st.plotly_chart(conflict_map_fig, use_container_width=True)
 
 with tab3:
     st.markdown("### **Human Cost**")    
