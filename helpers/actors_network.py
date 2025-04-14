@@ -49,131 +49,131 @@ def main(df):
 
     if selected_group1 == "None" or selected_group2 == "None":
         st.warning("Please select both groups to proceed.")
-        return
+        # return
+    else:
+        # Filter events between selected groups
+        mask_groups = (
+            ((df["actor1"] == selected_group1) | (df["actor2"] == selected_group1)) &
+            ((df["actor1"] == selected_group2) | (df["actor2"] == selected_group2))
+        )
+        df_groups = df[mask_groups].copy()
 
-    # Filter events between selected groups
-    mask_groups = (
-        ((df["actor1"] == selected_group1) | (df["actor2"] == selected_group1)) &
-        ((df["actor1"] == selected_group2) | (df["actor2"] == selected_group2))
-    )
-    df_groups = df[mask_groups].copy()
+        if df_groups.empty:
+            st.warning("No events detected between the selected groups.")
+            # return
+        else:
+            total_events = len(df_groups)
+            #st.markdown(f"**Total conflict events between `{selected_group1}` and `{selected_group2}`: {total_events}**")
 
-    if df_groups.empty:
-        st.warning("No events detected between the selected groups.")
-        return
+            # Bar Chart: Conflict Initiation by Group
+            st.subheader(f"**Conflict Initiation Comparison between Groups**")
+            st.markdown("""
+            This bar graph shows the number of conflict events each group **initiated**.  
+            """)
 
-    total_events = len(df_groups)
-    #st.markdown(f"**Total conflict events between `{selected_group1}` and `{selected_group2}`: {total_events}**")
+            initiations = df_groups.groupby("actor1").size().reset_index(name="count")
+            initiations = initiations[initiations["actor1"].isin([selected_group1, selected_group2])]
 
-    # Bar Chart: Conflict Initiation by Group
-    st.subheader(f"**Conflict Initiation Comparison between Groups**")
-    st.markdown("""
-    This bar graph shows the number of conflict events each group **initiated**.  
-    """)
+            group_event_counts = {
+                selected_group1: initiations[initiations["actor1"] == selected_group1]["count"].sum(),
+                selected_group2: initiations[initiations["actor1"] == selected_group2]["count"].sum(),
+            }
 
-    initiations = df_groups.groupby("actor1").size().reset_index(name="count")
-    initiations = initiations[initiations["actor1"].isin([selected_group1, selected_group2])]
+            sorted_groups = sorted(group_event_counts.items(), key=lambda x: -x[1])
+            bar_data = pd.DataFrame({
+                "Group": [g[0] for g in sorted_groups],
+                "Initiated Events": [g[1] for g in sorted_groups],
+                "Color": ["indianred", "steelblue"]
+            })
 
-    group_event_counts = {
-        selected_group1: initiations[initiations["actor1"] == selected_group1]["count"].sum(),
-        selected_group2: initiations[initiations["actor1"] == selected_group2]["count"].sum(),
-    }
+            fig = go.Figure()
 
-    sorted_groups = sorted(group_event_counts.items(), key=lambda x: -x[1])
-    bar_data = pd.DataFrame({
-        "Group": [g[0] for g in sorted_groups],
-        "Initiated Events": [g[1] for g in sorted_groups],
-        "Color": ["indianred", "steelblue"]
-    })
+            fig.add_trace(go.Bar(
+                x=bar_data["Group"],
+                y=bar_data["Initiated Events"],
+                marker_color=bar_data["Color"],
+                text=bar_data["Initiated Events"],
+                textposition="auto",
+                name="Events Initiated"
+            ))
 
-    fig = go.Figure()
+            for i, row in bar_data.iterrows():
+                if row["Initiated Events"] == 0:
+                    fig.add_annotation(
+                        x=row["Group"],
+                        y=0,
+                        text="No initiated events",
+                        showarrow=False,
+                        font=dict(color="gray", size=12),
+                        yshift=20
+                    )
 
-    fig.add_trace(go.Bar(
-        x=bar_data["Group"],
-        y=bar_data["Initiated Events"],
-        marker_color=bar_data["Color"],
-        text=bar_data["Initiated Events"],
-        textposition="auto",
-        name="Events Initiated"
-    ))
-
-    for i, row in bar_data.iterrows():
-        if row["Initiated Events"] == 0:
-            fig.add_annotation(
-                x=row["Group"],
-                y=0,
-                text="No initiated events",
-                showarrow=False,
-                font=dict(color="gray", size=12),
-                yshift=20
+            fig.update_layout(
+                yaxis_title="Number of Events Initiated",
+                xaxis_title="Group",
+                margin=dict(l=10, r=10, t=30, b=10),
+                height=400
             )
 
-    fig.update_layout(
-        yaxis_title="Number of Events Initiated",
-        xaxis_title="Group",
-        margin=dict(l=10, r=10, t=30, b=10),
-        height=400
-    )
+            st.plotly_chart(fig, use_container_width=True)
 
-    st.plotly_chart(fig, use_container_width=True)
+            # Heatmap of Monthly Activity
+            st.subheader("**Heatmap: Conflict Events by Month and Year**")
+            st.markdown("""
+            This heatmap shows the **number of conflict events per month and year** between the selected groups.  
+            It helps highlight **seasonal or yearly conflict trends**.
+            """)
 
-    # Heatmap of Monthly Activity
-    st.subheader("**Heatmap: Conflict Events by Month and Year**")
-    st.markdown("""
-    This heatmap shows the **number of conflict events per month and year** between the selected groups.  
-    It helps highlight **seasonal or yearly conflict trends**.
-    """)
+            years = sorted(df_groups["year"].dropna().unique())
+            months = list(range(1, 13))
+            grid = pd.DataFrame([(y, m) for y in years for m in months], columns=["year", "month"])
 
-    years = sorted(df_groups["year"].dropna().unique())
-    months = list(range(1, 13))
-    grid = pd.DataFrame([(y, m) for y in years for m in months], columns=["year", "month"])
-
-    monthly_counts = (
-    df_groups.groupby(["year", "month"], as_index=False)
-    .agg(count=("event_type", "count")))
-    heatmap_data = pd.merge(grid, monthly_counts, on=["year", "month"], how="left").fillna(0)
-    heatmap_data = heatmap_data.drop_duplicates(subset=["year", "month"])
+            monthly_counts = (
+            df_groups.groupby(["year", "month"], as_index=False)
+            .agg(count=("event_type", "count")))
+            heatmap_data = pd.merge(grid, monthly_counts, on=["year", "month"], how="left").fillna(0)
+            heatmap_data = heatmap_data.drop_duplicates(subset=["year", "month"])
 
 
-    heatmap_data["date"] = pd.to_datetime(dict(year=heatmap_data.year, month=heatmap_data.month, day=1))
-    cutoff_date = datetime(2025, 3, 31)
-    heatmap_data["data_status"] = heatmap_data["date"].apply(
-        lambda x: "Data Pending" if x > cutoff_date else "Data Available"
-    )
+            heatmap_data["date"] = pd.to_datetime(dict(year=heatmap_data.year, month=heatmap_data.month, day=1))
+            cutoff_date = datetime(2025, 3, 31)
+            heatmap_data["data_status"] = heatmap_data["date"].apply(
+                lambda x: "Data Pending" if x > cutoff_date else "Data Available"
+            )
 
-    heatmap_data["display_count"] = heatmap_data.apply(
-        lambda row: None if row["data_status"] == "Data Pending" else row["count"], axis=1
-    )
+            heatmap_data["display_count"] = heatmap_data.apply(
+                lambda row: None if row["data_status"] == "Data Pending" else row["count"], axis=1
+            )
 
-    heatmap_data["month_name"] = heatmap_data["month"].apply(lambda x: calendar.month_abbr[x])
-    month_order = list(calendar.month_abbr[1:])  
+            heatmap_data["month_name"] = heatmap_data["month"].apply(lambda x: calendar.month_abbr[x])
+            month_order = list(calendar.month_abbr[1:])  
 
-    heatmap = alt.Chart(heatmap_data).mark_rect(
-    stroke='white',  
-    strokeWidth=0.5  
-    ).encode(
-    x=alt.X(
-        "month_name:O",
-        sort=month_order,
-        title="Month",
-        axis=alt.Axis(labelAngle=0),
-        scale=alt.Scale(paddingInner=0, paddingOuter=0)
-    ),
-    y=alt.Y("year:O", title="Year"),
-    color=alt.condition(
-        alt.datum.data_status == "Data Pending",
-        alt.value("#eeeeee"),  
-        alt.Color("display_count:Q", scale=alt.Scale(scheme="cividis"), title="Event Count")
-    ),
-    tooltip=[
-        alt.Tooltip("year:O", title="Year"),
-        alt.Tooltip("month_name:O", title="Month"),
-        alt.Tooltip("count:Q", title="Event Count")    ]
-    ).properties(width=700, height=400)
+            heatmap = alt.Chart(heatmap_data).mark_rect(
+            stroke='white',  
+            strokeWidth=0.5  
+            ).encode(
+            x=alt.X(
+                "month_name:O",
+                sort=month_order,
+                title="Month",
+                axis=alt.Axis(labelAngle=0),
+                scale=alt.Scale(paddingInner=0, paddingOuter=0)
+            ),
+            y=alt.Y("year:O", title="Year"),
+            color=alt.condition(
+                alt.datum.data_status == "Data Pending",
+                alt.value("#eeeeee"),  
+                alt.Color("display_count:Q", scale=alt.Scale(scheme="cividis"), title="Event Count")
+            ),
+            tooltip=[
+                alt.Tooltip("year:O", title="Year"),
+                alt.Tooltip("month_name:O", title="Month"),
+                alt.Tooltip("count:Q", title="Event Count")    ]
+            ).properties(width=700, height=400)
 
 
 
-    st.altair_chart(heatmap, use_container_width=True)
+            st.altair_chart(heatmap, use_container_width=True)
 
 if __name__ == "__main__":
     main()
