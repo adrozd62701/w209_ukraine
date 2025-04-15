@@ -50,7 +50,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Home", "Conflict Map","Human Cost","Actors Network","Additional Resources"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Home", "Conflict Map","Human Cost","Groups Involved in the Conflict","Additional Resources"])
 
 # with st.container():
 with tab1:
@@ -68,7 +68,7 @@ with tab1:
     st.write("**Human Cost:** The Human Cost page visualizes the conflict's fatalities. Use this timeline to "
         "better understand when and in what context those deaths occurred. Filter by Event Type in the sidebar, "
         "and hover over marked points to see major news headlines.")
-    st.write("**Actors Network:** This shows conflict events between two selected groups by utilizing a bar chart that " \
+    st.write("**Groups Involved in the Conflict:** This shows conflict events between two selected groups by utilizing a bar chart that " \
         "displays each group’s initiated event count and a heatmap to track the conflict events over time.")
     st.write("**Additional Resources:** The final tab on this website has additional resources pertaining to the conflict in Ukraine")
 
@@ -91,7 +91,7 @@ with tab3:
     st.altair_chart(area_chart, use_container_width=True)
 
 with tab4:
-    st.markdown("### **Actors Network**")
+    st.markdown("### **Groups Involved in the Conflict**")
     st.write("This shows conflict events between two selected groups by utilizing a bar chart " \
         "that displays each group’s initiated event count and a heatmap to track the conflict events over time.")
     
