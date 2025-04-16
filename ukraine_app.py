@@ -59,7 +59,9 @@ with tab1:
 
     st.write("**Authors:** Akanksha Chattopadhyay, Alice Drozd, Sooyeon Kim, Rina Palta" )
 
-    st.write("**Data:** Our data comes from the [Armed Conflict Location & Event Data (ACLED)](https://acleddata.com). The ACLED is a disaggregated data collection,"
+    st.write("**Target Users:** General public, journalists, humanitarian aid organization leaders")
+
+    st.write("**Data:** Our data comes from the [Armed Conflict Location & Event Data (ACLED)](https://acleddata.com). The ACLED is a disaggregated data collection, "
         "analysis, and crisis mapping initiative. ACLED collects information on the dates, actors, locations, fatalities, "
         "and types of all reported political violence and protest events around the world.")
     st.write("Please explore the interactive visualizations on our website:")
